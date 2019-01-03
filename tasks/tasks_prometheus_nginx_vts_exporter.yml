@@ -1,0 +1,44 @@
+---
+
+#
+# https://github.com/hnlq715/nginx-vts-exporter/releases/download/v0.10.3/nginx-vts-exporter-0.10.3.linux-amd64.tar.gz
+
+  - set_fact:
+      nginx_vts_exporter_sub_dir: "{{ exporter_config.exporter_dir | default('nginx_vts_exporter') }}"
+      nginx_vts_exporter_user: "{{ exporter_config.exporter_user | default('prometheus_user') }}"
+      nginx_vts_exporter_group: "{{ exporter_config.exporter_group | default('prometheus_group') }}"
+
+  - name: Prometheus nginx vts Exporter | Download distribution
+    get_url:
+      url: " https://github.com/hnlq715/nginx-vts-exporter/releases/download/v{{prometheus_nginx_vts_exporter_version}}/nginx-vts-exporter-{{prometheus_nginx_vts_exporter_version}}.linux-amd64.tar.gz"
+      dest: "/tmp/nginx-vts-exporter-{{prometheus_nginx_vts_exporter_version}}.linux-amd64.tar.gz"
+    become: yes
+    become_user: "{{ nginx_vts_exporter_user }}"
+    tags:
+      - prometheus
+
+  - name: Prometheus nginx vts Exporter | unpack distribution
+    unarchive:
+      src: "/tmp/nginx-vts-exporter-{{prometheus_nginx_vts_exporter_version}}.linux-amd64.tar.gz"
+      dest: "{{prometheus_exporters_dir}}"
+      remote_src: yes
+    become: yes
+    become_user: "{{ nginx_vts_exporter_user }}"
+    tags:
+      - prometheus
+
+  - name: Prometheus nginx vts Exporter | rename exporter
+    file:
+      src: "{{prometheus_exporters_dir}}/nginx-vts-exporter-{{prometheus_nginx_vts_exporter_version}}.linux-amd64/nginx-vts-exporter"
+      dest: "{{prometheus_exporters_dir}}/nginx-vts-exporter-{{prometheus_nginx_vts_exporter_version}}.linux-amd64/nginx_vts_exporter"
+      state: link
+
+  - name: Prometheus nginx vts Exporter | link nginx vts exporter dir
+    file: src="{{prometheus_exporters_dir}}/nginx-vts-exporter-{{prometheus_nginx_vts_exporter_version}}.linux-amd64/" dest="{{prometheus_exporters_dir}}/{{nginx_vts_exporter_sub_dir}}" owner="root"  group="{{ nginx_vts_exporter_group }}" state=link
+    become: yes
+    tags:
+      - prometheus
+
+  - include_tasks: "tasks_startup.yml"
+    vars:
+      exporter_startup_config: "{{ exporter_config }}"

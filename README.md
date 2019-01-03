@@ -22,6 +22,9 @@ Bundled exporters:
 | phpfpm | php fpm exporter via sock | 9253 | http://192.168.2.66:9253/metrics | [Lusitaniae/phpfpm_exporter](https://github.com/Lusitaniae/phpfpm_exporter) |
 | cadvisor | Google's cadvisor exporter | 9280 (configurable) | http://192.168.2.66:9280/metrics | [google/cadvisor](https://github.com/google/cadvisor/) |
 | monit | Monit exporter | 9388 (configurable) | http://192.168.2.66:9388/metrics | [commercetools/monit_exporter](https://github.com/commercetools/monit_exporter) |
+| nginx_vts | Nginx vts exporter | 9913 (configurable) | http://192.168.2.66:9913/metrics | [hnlq715/nginx-vts-exporter](https://github.com/hnlq715/nginx-vts-exporter) |
+
+
 Example of usage:
 
 Simple
@@ -56,7 +59,7 @@ box_prometheus_exporters:
       startup: {
         env:
           - ENV_VAR1: "ENV_VAR1 value",
-          - ENV_VAR2: "ENV_VAR1 value"          
+          - ENV_VAR2: "ENV_VAR1 value"
 
         execstop: "/some/script/to/execute/on/stop",
         pidfile: "/if/you/need/pidfile",
@@ -64,7 +67,7 @@ box_prometheus_exporters:
           - "IF YOU WANT"
           - "SOME REALLY CUSTOM STUFF"
           - "in Service section of the systemd file"
-          - "(see templates folder)"          
+          - "(see templates folder)"
       }
 
     }
